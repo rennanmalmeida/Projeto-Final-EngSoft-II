@@ -107,8 +107,8 @@ const ErrorPage = () => {
           <div>
             <h3 className="font-semibold mb-3">O que você pode fazer:</h3>
             <ul className="space-y-2">
-              {errorDetails.suggestions.map((suggestion, index) => (
-                <li key={index} className="flex items-start gap-2">
+              {errorDetails.suggestions.map((suggestion, crypto.randomUUID()) => (
+                <li key={crypto.randomUUID()} className="flex items-start gap-2">
                   <div className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 flex-shrink-0" />
                   <span className="text-sm text-gray-600">{suggestion}</span>
                 </li>
