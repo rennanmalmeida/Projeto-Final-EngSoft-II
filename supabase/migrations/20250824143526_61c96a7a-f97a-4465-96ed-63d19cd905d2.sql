@@ -71,11 +71,18 @@ BEGIN
   FROM public.products 
   WHERE id = product_id_param;
   
-  IF NOT FOUND THEN
-    SELECT json_build_object(
-      'isValid', false,
-      'currentStock', 0,
-      'message', 'Produto não encontrado'
+  DECLARE
+    product_not_found_message CONSTANT TEXT := 'Produto não encontrado';
+BEGIN
+    -- ... your logic
+    IF NOT FOUND THEN
+        SELECT json_build_object(
+            'isValid', false,
+            'currentStock', 0,
+            'message', product_not_found_message
+        );
+    END IF;
+END $$;
     ) INTO result;
     RETURN result;
   END IF;
