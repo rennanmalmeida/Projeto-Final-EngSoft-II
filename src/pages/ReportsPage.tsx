@@ -107,7 +107,7 @@ const ReportsPage: React.FC = () => {
         {isLoading ? (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {Array(4).fill(0).map((_, index) => (
-              <Skeleton key={index} className="h-32 w-full" />
+              <Skeleton key={crypto.randomUUID()} className="h-32 w-full" />
             ))}
           </div>
         ) : stats && (
