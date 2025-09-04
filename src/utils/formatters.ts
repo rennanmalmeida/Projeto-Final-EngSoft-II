@@ -56,7 +56,7 @@ export function useCurrencyInput(
       onChange(newValue);
     },
     onFocus: (e: React.FocusEvent<HTMLInputElement>) => {
-      // Seleciona todo o texto quando o campo recebe foco
+      
       e.target.select();
     }
   };

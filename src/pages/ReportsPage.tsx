@@ -28,7 +28,7 @@ const ReportsPage: React.FC = () => {
   };
 
   const handleExport = () => {
-    // TODO: Implementar exportação de relatórios
+
     console.log("Exportar relatórios");
   };
 
