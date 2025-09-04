@@ -15,7 +15,7 @@ export const SimpleImageUpload: React.FC<SimpleImageUploadProps> = ({
   onChange,
   onRemove
 }) => {
-  const [isUploading, setIsUploading] = useState(false);
+  const [ setIsUploading] = useState(false);
 
   const handleUpload = async (file: File) => {
     setIsUploading(true);
