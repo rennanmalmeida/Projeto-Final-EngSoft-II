@@ -46,7 +46,7 @@ export const SimpleImageUpload: React.FC<SimpleImageUploadProps> = ({
     // Se a URL é um blob (preview local), precisamos fazer o upload
     if (url.startsWith('blob:')) {
       // Buscar o arquivo do input para fazer upload
-      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      const fileInput = document.querySelector('input[type="file"]');
       const file = fileInput?.files?.[0];
       if (file) {
         await handleUpload(file);
