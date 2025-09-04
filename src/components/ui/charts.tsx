@@ -130,9 +130,9 @@ export const LineChart: React.FC<ChartProps> = ({ data, options, className }) =>
           bottom: 5,
         }}
       >
-        {data.datasets.map((dataset: any, index: number) => (
+        {data.datasets.map((dataset: any) => (
           <Line
-            key={index}
+            key={dataset.label}
             type="monotone"
             dataKey={dataset.label}
             stroke={dataset.borderColor || dataset.backgroundColor}
