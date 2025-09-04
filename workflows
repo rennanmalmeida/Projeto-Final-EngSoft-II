@@ -1,1 +1,50 @@
+name: SonarCloud Analysis
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build and Analyze
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Importante para o SonarCloud
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build --if-present
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          args: >
+            -Dsonar.projectKey=SEU_USUARIO_SEU_FORK
+            -Dsonar.organization=SUA_ORGANIZACAO
+            -Dsonar.sources=src
+            -Dsonar.exclusions=**/node_modules/**,**/*.test.ts
+            -Dsonar.tests=src
+            -Dsonar.test.inclusions=**/*.test.ts
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run Tests with coverage
+        run: npm run test -- --coverage
 
