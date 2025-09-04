@@ -26,7 +26,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
   onDateRangeChange,
   className,
 }) => {
-  const handleSelect = (date: Date | undefined) => {
+  const = (date: Date | undefined) => {
     if (date) {
       const range =
         !dateRange.from || (dateRange.from && dateRange.to)
