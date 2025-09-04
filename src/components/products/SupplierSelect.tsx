@@ -47,9 +47,8 @@ export const SupplierSelect: React.FC<SupplierSelectProps> = ({
 
   return (
     <div className={`space-y-3 ${className}`}>
-      <div>
-        <label className="text-sm font-medium">Fornecedores</label>
-        <Select onValueChange={handleAddSupplier}>
+      <label htmlFor="supplier-select" className="text-sm font-medium">Fornecedores</label>
+      <Select id="supplier-select" onValueChange={handleAddSupplier}> <Select onValueChange={handleAddSupplier}></Select>
           <SelectTrigger className="mt-1">
             <SelectValue placeholder="Adicionar fornecedor" />
           </SelectTrigger>
