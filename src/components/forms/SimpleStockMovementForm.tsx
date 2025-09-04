@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -94,8 +93,11 @@ export const SimpleStockMovementForm: React.FC<SimpleStockMovementFormProps> = (
           )}
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Tipo de movimentação</label>
+            <label className="text-sm font-medium" htmlFor="type-select">
+              Tipo de movimentação
+            </label>
             <Select
+              id="type-select"
               value={String(values.type)}
               onValueChange={handleTypeChange}
               disabled={isSubmitting || isLoading}
@@ -114,8 +116,11 @@ export const SimpleStockMovementForm: React.FC<SimpleStockMovementFormProps> = (
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Quantidade</label>
+            <label className="text-sm font-medium" htmlFor="quantity-input">
+              Quantidade
+            </label>
             <Input
+              id="quantity-input"
               type="number"
               min="1"
               step="1"
@@ -135,14 +140,12 @@ export const SimpleStockMovementForm: React.FC<SimpleStockMovementFormProps> = (
             )}
           </div>
 
-          <label className="text-sm font-medium" htmlFor="notes">Observações (opcional)</label>
-          <Textarea
-            id="notes"
-            placeholder="Adicione observações sobre esta movimentação..."
-            {...getFieldProps('notes')}
-            disabled={isSubmitting || isLoading}
-          />
+          <div className="space-y-2">
+            <label className="text-sm font-medium" htmlFor="notes-textarea">
+              Observações (opcional)
+            </label>
             <Textarea
+              id="notes-textarea"
               placeholder="Adicione observações sobre esta movimentação..."
               {...getFieldProps('notes')}
               disabled={isSubmitting || isLoading}
