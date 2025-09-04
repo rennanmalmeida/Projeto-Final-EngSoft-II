@@ -106,7 +106,7 @@ export const OptimizedCategoryDistributionChart: React.FC = () => {
         {/* Resumo das categorias */}
         <div className="grid grid-cols-1 gap-2 mt-4">
           {categoryAnalysis.slice(0, 3).map((item: CategoryAnalysis, index: number) => (
-            <div key={index} className="flex justify-between items-center text-xs md:text-sm p-2 bg-gray-50 rounded">
+            <div key={crypto.randomUUID()} className="flex justify-between items-center text-xs md:text-sm p-2 bg-gray-50 rounded">
               <span className="font-medium truncate">{item.category_name || 'Sem categoria'}</span>
               <div className="text-right">
                 <div className="font-bold text-green-600">{formatCurrency(Number(item.total_value) || 0)}</div>
