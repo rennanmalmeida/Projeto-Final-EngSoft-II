@@ -21,7 +21,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   requiredRoles,
 }) => {
   const { user, loading } = useAuth();
-  const { hasPermission, isAdmin, isDeveloper, hasAnyRole, hasPermanentAdminRights, isMaster } = useAuthorization();
+  const { isAdmin, isDeveloper, hasAnyRole, hasPermanentAdminRights, isMaster } = useAuthorization();
 
   console.log("ProtectedRoute check:", { 
     user: user?.id, 
