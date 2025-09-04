@@ -93,7 +93,7 @@ export const BarChart: React.FC<ChartProps> = ({ data, options, className }) => 
       >
         {data.datasets.map((dataset: any, index: number) => (
           <Bar
-            key={index}
+          <YourComponent key={crypto.randomUUID()} 
             dataKey={dataset.label}
             fill={dataset.backgroundColor}
           />
