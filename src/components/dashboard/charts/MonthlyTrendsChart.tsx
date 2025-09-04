@@ -54,20 +54,23 @@ export const MonthlyTrendsChart: React.FC = () => {
     saidas: supplier.totalOut
   }));
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      return (
-        <div className="bg-white p-3 border rounded shadow">
-          <p className="font-medium">{data.fullName}</p>
-          <p className="text-red-600">
-            Saídas: {data.saidas} unidades
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
+// Tooltip.jsx
+const Tooltip = ({ active, payload }) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload;
+    return (
+      <div className="bg-white p-3 border rounded shadow">
+        <p className="font-medium">{data.fullName}</p>
+        <p className="text-red-600">
+          Saídas: {data.saidas} unidades
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
+export default Tooltip;
 
   return (
     <Card>
