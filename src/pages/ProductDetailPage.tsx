@@ -8,7 +8,7 @@ import { CategoryBadge } from "@/components/products/CategoryBadge";
 import { StockMovementModal } from "@/components/inventory/StockMovementModal";
 import { StockMovementsList } from "@/components/inventory/StockMovementsList";
 import { formatCurrency, formatDate, getStockStatus } from "@/lib/utils";
-import { Edit, Trash2, ArrowLeft, Plus, TrendingUp } from "lucide-react";
+import { Edit, Trash2, ArrowLeft, TrendingUp } from "lucide-react";
 import { useProducts } from "@/hooks/useProducts";
 import { useRealtimeStock } from "@/hooks/useRealtimeStock";
 import { Skeleton } from "@/components/ui/skeleton";
