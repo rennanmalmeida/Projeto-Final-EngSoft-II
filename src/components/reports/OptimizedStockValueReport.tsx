@@ -5,7 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useOptimizedDashboard } from "@/hooks/useOptimizedDashboard";
 import { formatCurrency } from "@/lib/utils";
-import { MovementSummary, DashboardStats } from "@/types";
+import { MovementSummary } from "@/types";
 
 export const OptimizedStockValueReport: React.FC = () => {
   const { stats, movementsSummary, isLoading } = useOptimizedDashboard();
