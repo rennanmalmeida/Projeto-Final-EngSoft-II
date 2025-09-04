@@ -114,31 +114,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         className="hidden"
         disabled={isUploading}
       />
-      <div
-        role="button"
-        tabIndex={0}
-        aria-disabled={isUploading}
-        onClick={isUploading ? undefined : handleClick}
-        onKeyDown={e => {
-          if (!isUploading && (e.key === 'Enter' || e.key === ' ')) {
-        e.preventDefault();
-        handleClick();
-          }
-        }}
-          onTouchEnd={isUploading ? undefined : handleClick}
-          className={cn(
-            "flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-muted/50 hover:bg-muted transition-colors",
-            isUploading && "opacity-50 cursor-not-allowed"
-          )}
-              >
-                <div className="flex flex-col items-center justify-center p-6">
-          <div className="flex items-center justify-center w-10 h-10 mb-3 bg-muted rounded-full">
-            {isUploading ? (
-              <div className="w-4 h-4 border-2 border-primary border-t-transparent animate-spin rounded-full" />
-            ) : (
-              <ImageIcon className="w-5 h-5 text-muted-foreground" />
-            )}
-          </div>
+      src/components/ui/file-upload.tsx
           <p className="mb-1 text-sm text-muted-foreground font-medium">
             {isUploading ? "Enviando..." : placeholder}
           </p>
