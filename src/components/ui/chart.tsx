@@ -45,7 +45,14 @@ const ChartContainer = React.forwardRef<
   const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`
 
   return (
-    <ChartContext.Provider value={{ config }}>
+    function Component() {
+  const obj = useMemo(() => ({foo: 'bar'}), []); // value is cached by useMemo
+  return (
+    <SomeContext.Provider value={obj}> { /* Compliant */ }
+      <SomeComponent />
+    </SomeContext.Provider>
+  );
+}
       <div
         data-chart={chartId}
         ref={ref}
