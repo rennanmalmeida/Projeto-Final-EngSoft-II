@@ -14,8 +14,7 @@ export const MovementTypeField: React.FC<MovementTypeFieldProps> = ({
   disabled = false
 }) => {
   return (
-    <div className="space-y-2">
-      <label className="text-sm font-medium">Tipo *</label>
+    <label className="text-sm font-medium" htmlFor="movement-type-select">Tipo *</label>
       <Select
         value={value}
         onValueChange={onChange}
