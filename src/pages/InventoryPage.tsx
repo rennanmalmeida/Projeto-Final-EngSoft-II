@@ -54,25 +54,69 @@ const getDisplayName = (productName: string, description?: string): string => {
 
 const InventoryPage: React.FC = () => {
   const isMobile = useIsMobile();
-  
+
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<string>("name");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [filter, setFilter] = useState<"all" | "low" | "medium" | "good">("all");
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("all"); // Mudança: agora é categoryId
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("all");
   const pageRef = useRef(null);
-  
-  // Componente de card para mobile
+
+  const { useAllProducts } = useProducts();
+  const { data: products = [], isLoading, error, refetch } = useAllProducts({
+    search: searchQuery || undefined,
+    categoryId: selectedCategoryId === "all" ? undefined : selectedCategoryId,
+    sortBy: sortBy as any,
+    sortDirection: sortDirection
+  });
+
+  const { useDistinctCategories } = useCategories();
+  const { data: categories = [], isLoading: categoriesLoading } = useDistinctCategories();
+
+  const filteredProducts = useMemo(() => {
+    return products.filter(product => {
+      if (filter === "all") return true;
+      const status = getStockStatus(product.quantity, product.minimumStock).class.split("-")[1];
+      return filter === status;
+    });
+  }, [products, filter]);
+
+  const toggleSort = (field: string) => {
+    if (sortBy === field) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(field);
+      setSortDirection("asc");
+    }
+  };
+
+  const getSortIcon = (field: string) => {
+    if (sortBy !== field) return null;
+    return sortDirection === "asc" ? "↑" : "↓";
+  };
+
+  const handleClearFilters = () => {
+    setSearchQuery("");
+    setFilter("all");
+    setSelectedCategoryId("all");
+  };
+
+  const handleRefresh = () => {
+    refetch();
+    ApiService.clearCache();
+  };
+
+  // Extracted: ProductCard for mobile and desktop
   const ProductMobileCard: React.FC<{ product: any }> = ({ product }) => {
     const stockStatus = getStockStatus(product.quantity, product.minimumStock);
     const totalValue = product.quantity * product.price;
     const displayName = getDisplayName(product.name, product.description);
-    
+
     return (
       <MobileCard className="space-y-3">
         <div className="flex justify-between items-start">
           <div className="flex-1 min-w-0">
-            <Link 
+            <Link
               to={`/products/${product.id}`}
               className="font-medium hover:underline text-base leading-tight"
               title={displayName}
@@ -85,11 +129,10 @@ const InventoryPage: React.FC = () => {
               </p>
             )}
           </div>
-          <Badge className={cn("ml-2 shrink-0", stockStatus.class)}>
+          <Badge className={cn("ml-2 shrink-0", stockStatus.class)}></Badge>
             {stockStatus.label}
           </Badge>
         </div>
-        
         <div className="grid grid-cols-2 gap-3 text-sm">
           <div>
             <span className="text-muted-foreground">Categoria:</span>
@@ -125,59 +168,150 @@ const InventoryPage: React.FC = () => {
     );
   };
 
-  // Get products with filters using React Query
-  const { useAllProducts } = useProducts();
-  const { data: products = [], isLoading, error, refetch } = useAllProducts({
-    search: searchQuery || undefined,
-    categoryId: selectedCategoryId === "all" ? undefined : selectedCategoryId, // Mudança
-    sortBy: sortBy as any,
-    sortDirection: sortDirection
-  });
-
-  // Get categories using React Query - agora retorna objetos {id, name}
-  const { useDistinctCategories } = useCategories();
-  const { data: categories = [], isLoading: categoriesLoading } = useDistinctCategories();
-  
-  // Filter products based on stock status - memoized for performance
-  const filteredProducts = useMemo(() => {
-    return products.filter(product => {
-      if (filter === "all") return true;
-      
-      const status = getStockStatus(product.quantity, product.minimumStock).class.split("-")[1];
-      return filter === status;
-    });
-  }, [products, filter]);
-  
-  const toggleSort = (field: string) => {
-    if (sortBy === field) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-    } else {
-      setSortBy(field);
-      setSortDirection("asc");
+  // Extracted: Desktop table rows
+  const renderTableRows = () => {
+    if (filteredProducts.length === 0) {
+      return (
+        <TableRow>
+          <TableCell colSpan={6} className="text-center py-8">
+            <p className="text-muted-foreground">
+              Nenhum produto encontrado
+            </p>
+            <Button
+              className="mt-2"
+              variant="outline"
+              onClick={handleClearFilters}
+            >
+              Limpar filtros
+            </Button>
+          </TableCell>
+        </TableRow>
+      );
     }
-  };
-  
-  const getSortIcon = (field: string) => {
-    if (sortBy !== field) return null;
-    return sortDirection === "asc" ? "↑" : "↓";
+    return filteredProducts.map((product) => {
+      const stockStatus = getStockStatus(product.quantity, product.minimumStock);
+      const totalValue = product.quantity * product.price;
+      const displayName = getDisplayName(product.name, product.description);
+
+      return (
+        <TableRow key={product.id}>
+          <TableCell>
+            <Link
+              to={`/products/${product.id}`}
+              className="font-medium hover:underline"
+              title={displayName}
+            >
+              {displayName}
+            </Link>
+            {product.description && !isUUID(product.name) && (
+              <p className="text-sm text-muted-foreground mt-1">
+                {product.description}
+              </p>
+            )}
+          </TableCell>
+          <TableCell>
+            <CategoryDisplay categoryId={product.categoryId} />
+          </TableCell>
+          <TableCell className="text-right">
+            {product.quantity}
+            {product.minimumStock && (
+              <span className="text-xs text-muted-foreground ml-1">
+                (min: {product.minimumStock})
+              </span>
+            )}
+          </TableCell>
+          <TableCell className="text-right">
+            {formatCurrency(product.price)}
+          </TableCell>
+          <TableCell className="text-right">
+            {formatCurrency(totalValue)}
+          </TableCell>
+          <TableCell>
+            <Badge className={stockStatus.class}>
+              {stockStatus.label}
+            </Badge>
+          </TableCell>
+        </TableRow>
+      );
+    });
   };
 
-  const handleClearFilters = () => {
-    setSearchQuery("");
-    setFilter("all");
-    setSelectedCategoryId("all"); // Mudança
+  // Extracted: Category Select Items
+  const renderCategorySelectItems = () => {
+    if (categoriesLoading) {
+      return <SelectItem value="loading" disabled>Carregando...</SelectItem>;
+    }
+    return categories.map((category) => (
+      <SelectItem key={category.id} value={category.id}>
+        {category.name}
+      </SelectItem>
+    ));
   };
 
-  const handleRefresh = () => {
-    refetch();
-    // Clear cache to force fresh data
-    ApiService.clearCache();
-  };
+  // Extracted: Mobile view
+  const renderMobileView = () => (
+    <div className="space-y-3">
+      {filteredProducts.length === 0 ? (
+        <MobileCard className="text-center py-8">
+          <p className="text-muted-foreground">
+            Nenhum produto encontrado
+          </p>
+          <Button
+            className="mt-2"
+            variant="outline"
+            onClick={handleClearFilters}
+          >
+            Limpar filtros
+          </Button>
+        </MobileCard>
+      ) : (
+        filteredProducts.map((product) => (
+          <ProductMobileCard key={product.id} product={product} />
+        ))
+      )}
+    </div>
+  );
+
+  // Extracted: Desktop view
+  const renderDesktopView = () => (
+    <div className="border rounded-lg overflow-hidden">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead
+              className="cursor-pointer select-none"
+              onClick={() => toggleSort("name")}
+            >
+              Produto {getSortIcon("name")}
+            </TableHead>
+            <TableHead>Categoria</TableHead>
+            <TableHead
+              className="cursor-pointer select-none text-right"
+              onClick={() => toggleSort("quantity")}
+            >
+              Estoque {getSortIcon("quantity")}
+            </TableHead>
+            <TableHead
+              className="cursor-pointer select-none text-right"
+              onClick={() => toggleSort("price")}
+            >
+              Preço {getSortIcon("price")}
+            </TableHead>
+            <TableHead className="text-right">Valor Total</TableHead>
+            <TableHead>Status</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {renderTableRows()}
+        </TableBody>
+      </Table>
+    </div>
+  );
 
   return (
     <AppLayout>
       <MobileContainer>
-        <div className="space-y-4 sm:space-y-6">
+        <div className="space-y-4 sm:space-y-6"></div>
           <div className="flex flex-col gap-4">
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold">Estoque</h1>
@@ -185,7 +319,6 @@ const InventoryPage: React.FC = () => {
                 Visualize e gerencie seus produtos em estoque
               </p>
             </div>
-            
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
               <Button variant="outline" onClick={handleRefresh} className="sm:w-auto">
                 Atualizar
@@ -198,7 +331,6 @@ const InventoryPage: React.FC = () => {
               </Button>
             </div>
           </div>
-          
           <div className="space-y-3">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -209,7 +341,6 @@ const InventoryPage: React.FC = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               <Select
                 value={filter}
@@ -225,7 +356,6 @@ const InventoryPage: React.FC = () => {
                   <SelectItem value="good">Bom</SelectItem>
                 </SelectContent>
               </Select>
-              
               <Select
                 value={selectedCategoryId}
                 onValueChange={setSelectedCategoryId}
@@ -235,24 +365,14 @@ const InventoryPage: React.FC = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Todas</SelectItem>
-                  {categoriesLoading ? (
-                    <SelectItem value="loading" disabled>Carregando...</SelectItem>
-                  ) : (
-                    categories.map((category) => (
-                      <SelectItem key={category.id} value={category.id}>
-                        {category.name}
-                      </SelectItem>
-                    ))
-                  )}
+                  {renderCategorySelectItems()}
                 </SelectContent>
               </Select>
-              
               <Button variant="outline" onClick={handleClearFilters} className="sm:col-span-1">
                 Limpar
               </Button>
             </div>
           </div>
-          
           {isLoading ? (
             <div className="space-y-3">
               {Array(5).fill(0).map((_, index) => (
@@ -260,134 +380,14 @@ const InventoryPage: React.FC = () => {
               ))}
             </div>
           ) : error ? (
-            <MobileCard className="text-center py-8">
+            <MobileCard className="text-center py-8"></MobileCard>
               <p className="text-destructive text-lg">Erro ao carregar produtos</p>
               <Button className="mt-4" variant="outline" onClick={handleRefresh}>
                 Tentar novamente
               </Button>
             </MobileCard>
           ) : (
-            <>
-              {/* Mobile view */}
-              {isMobile ? (
-                <div className="space-y-3">
-                  {filteredProducts.length === 0 ? (
-                    <MobileCard className="text-center py-8">
-                      <p className="text-muted-foreground">
-                        Nenhum produto encontrado
-                      </p>
-                      <Button 
-                        className="mt-2" 
-                        variant="outline" 
-                        onClick={handleClearFilters}
-                      >
-                        Limpar filtros
-                      </Button>
-                    </MobileCard>
-                  ) : (
-                    filteredProducts.map((product) => (
-                      <ProductMobileCard key={product.id} product={product} />
-                    ))
-                  )}
-                </div>
-              ) : (
-                /* Desktop table view */
-                <div className="border rounded-lg overflow-hidden">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead 
-                          className="cursor-pointer select-none"
-                          onClick={() => toggleSort("name")}
-                        >
-                          Produto {getSortIcon("name")}
-                        </TableHead>
-                        <TableHead>Categoria</TableHead>
-                        <TableHead 
-                          className="cursor-pointer select-none text-right"
-                          onClick={() => toggleSort("quantity")}
-                        >
-                          Estoque {getSortIcon("quantity")}
-                        </TableHead>
-                        <TableHead 
-                          className="cursor-pointer select-none text-right"
-                          onClick={() => toggleSort("price")}
-                        >
-                          Preço {getSortIcon("price")}
-                        </TableHead>
-                        <TableHead className="text-right">Valor Total</TableHead>
-                        <TableHead>Status</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredProducts.length === 0 ? (
-                        <TableRow>
-                          <TableCell colSpan={6} className="text-center py-8">
-                            <p className="text-muted-foreground">
-                              Nenhum produto encontrado
-                            </p>
-                            <Button 
-                              className="mt-2" 
-                              variant="outline" 
-                              onClick={handleClearFilters}
-                            >
-                              Limpar filtros
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ) : (
-                        filteredProducts.map((product) => {
-                          const stockStatus = getStockStatus(product.quantity, product.minimumStock);
-                          const totalValue = product.quantity * product.price;
-                          const displayName = getDisplayName(product.name, product.description);
-                          
-                          return (
-                            <TableRow key={product.id}>
-                              <TableCell>
-                                <Link 
-                                  to={`/products/${product.id}`}
-                                  className="font-medium hover:underline"
-                                  title={displayName}
-                                >
-                                  {displayName}
-                                </Link>
-                                {product.description && !isUUID(product.name) && (
-                                  <p className="text-sm text-muted-foreground mt-1">
-                                    {product.description}
-                                  </p>
-                                )}
-                              </TableCell>
-                              <TableCell>
-                                <CategoryDisplay categoryId={product.categoryId} />
-                              </TableCell>
-                              <TableCell className="text-right">
-                                {product.quantity}
-                                {product.minimumStock && (
-                                  <span className="text-xs text-muted-foreground ml-1">
-                                    (min: {product.minimumStock})
-                                  </span>
-                                )}
-                              </TableCell>
-                              <TableCell className="text-right">
-                                {formatCurrency(product.price)}
-                              </TableCell>
-                              <TableCell className="text-right">
-                                {formatCurrency(totalValue)}
-                              </TableCell>
-                              <TableCell>
-                                <Badge className={stockStatus.class}>
-                                  {stockStatus.label}
-                                </Badge>
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })
-                      )}
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
-            </>
+            isMobile ? renderMobileView() : renderDesktopView()
           )}
         </div>
       </MobileContainer>
