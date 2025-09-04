@@ -71,14 +71,10 @@ BEGIN
   FROM public.products 
   WHERE id = product_id_param;
   
-  DECLARE
-    product_not_found_message CONSTANT TEXT := 'Produto não encontrado';
-BEGIN
-    -- ... your logic
 DO $$
 DECLARE
-    PRODUCT_NOT_FOUND_MESSAGE CONSTANT TEXT := 'Produto não encontrado';
-    MESSAGE_KEY CONSTANT TEXT := 'message';  -- Nova constante para a chave
+    -- Define a constante para a mensagem.
+    product_not_found_message CONSTANT TEXT := 'Produto não encontrado';
 BEGIN
     -- ... seu código
 
@@ -86,11 +82,12 @@ BEGIN
         SELECT json_build_object(
             'isValid', false,
             'currentStock', 0,
-            MESSAGE_KEY, PRODUCT_NOT_FOUND_MESSAGE  -- Usando a constante para a chave
+            -- Use a constante aqui, em vez do literal de string.
+            'message', product_not_found_message
         );
     END IF;
 
-    -- ... resto do seu código
+    -- ... resto do seu código onde a mensagem é usada novamente
 END $$;
   -- some other part of the code
   IF NOT FOUND THEN
