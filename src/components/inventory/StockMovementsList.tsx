@@ -106,11 +106,11 @@ export const StockMovementsList: React.FC<StockMovementsListProps> = ({
           <CardTitle>Movimentações Recentes</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {Array(5).fill(0).map((_, i) => (
-              <Skeleton key={i} className="h-16 w-full" />
-            ))}
-          </div>
+       <div className="space-y-4">
+  {Array(5).fill(0).map(() => (
+    <Skeleton key={crypto.randomUUID()} className="h-16 w-full" />
+  ))}
+</div>
         </CardContent>
       </Card>
     );
