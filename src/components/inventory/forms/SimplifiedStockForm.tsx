@@ -296,9 +296,7 @@ export const SimplifiedStockForm: React.FC<SimplifiedStockFormProps> = ({
           </div>
 
           {/* Observações */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Observações</label>
-            <Textarea
+          <label className="text-sm font-medium" htmlFor="notes">Observações</label> <Textarea
               value={formData.notes}
               onChange={(e) => updateField('notes', e.target.value)}
               disabled={isLoading}
