@@ -63,15 +63,22 @@ export const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose })
 
   if (!isOpen) return null;
 
-  return (
-    <>
-      {/* Overlay */}
-      <div 
-        className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
-        onClick={onClose}
-      />
-      
-      {/* Sidebar */}
+  <>
+    {/* Overlay */}
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+      role="button"
+      tabIndex={0}
+      aria-label="Fechar menu lateral"
+      onClick={onClose}
+      onKeyDown={e => {
+        if (e.key === "Enter" || e.key === " ") {
+          onClose();
+        }
+      }}
+      onTouchStart={onClose}
+    />
+    {/* Sidebar */}}
       <div className="fixed left-0 top-0 w-64 bg-sidebar h-full flex flex-col py-6 px-3 border-r border-border z-50 md:hidden transform transition-transform duration-300 ease-in-out">
         {/* Header com botão de fechar */}
         <div className="flex items-center justify-between px-4 mb-8">
