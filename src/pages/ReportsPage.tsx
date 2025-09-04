@@ -6,7 +6,7 @@ import { OptimizedCategoryDistributionChart } from "@/components/reports/Optimiz
 import { OptimizedMovementsReport } from "@/components/reports/OptimizedMovementsReport";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RefreshCw, Download, TrendingUp, AlertTriangle, CheckCircle } from "lucide-react";
+import { RefreshCw, Download, TrendingUp } from "lucide-react";
 import { useOptimizedDashboard } from "@/hooks/useOptimizedDashboard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatCurrency } from "@/lib/utils";
@@ -15,7 +15,6 @@ const ReportsPage: React.FC = () => {
   const { 
     stats, 
     movementsSummary, 
-    categoryAnalysis, 
     monthlyComparison,
     isLoading, 
     refreshAll 
