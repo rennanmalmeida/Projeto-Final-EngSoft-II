@@ -199,7 +199,7 @@ const ReportsPage: React.FC = () => {
               <div className="grid gap-4 md:grid-cols-2">
                 {insights.map((insight, index) => (
                   <div 
-                    key={index}
+                    key={crypto.randomUUID()}
                     className={`p-4 rounded-lg border ${
                       insight.type === 'positive' 
                         ? 'bg-green-50 border-green-200' 
