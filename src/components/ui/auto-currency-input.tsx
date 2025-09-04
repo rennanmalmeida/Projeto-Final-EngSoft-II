@@ -118,7 +118,7 @@ export const AutoCurrencyInput: React.FC<AutoCurrencyInputProps> = ({
       'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'
     ];
     
-    const isNumber = /^[0-9]$/.test(e.key);
+    const isNumber = /^\d$/.test(e.key);
     
     if (!allowedKeys.includes(e.key) && !isNumber) {
       e.preventDefault();
