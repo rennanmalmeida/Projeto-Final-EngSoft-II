@@ -90,8 +90,9 @@ export const SimpleProductForm: React.FC<SimpleProductFormProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-6">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Nome do produto*</label>
+            <label htmlFor="product-name" className="text-sm font-medium">Nome do produto*</label>
             <Input
+              id="product-name"
               placeholder="Digite o nome do produto"
               {...getFieldProps('name')}
             />
@@ -101,33 +102,36 @@ export const SimpleProductForm: React.FC<SimpleProductFormProps> = ({
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Quantidade*</label>
+              <label htmlFor="product-quantity" className="text-sm font-medium">Quantidade*</label>
               <Input
+                id="product-quantity"
                 type="number"
                 min="0"
                 placeholder="Ex: 10"
                 {...getFieldProps('quantity')}
               />
+              />
               {errors.quantity && (
                 <p className="text-sm font-medium text-destructive">{errors.quantity}</p>
               )}
             </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Estoque mínimo</label>
+              <label htmlFor="product-minimumStock" className="text-sm font-medium">Estoque mínimo</label>
               <Input
+                id="product-minimumStock"
                 type="number"
                 min="0"
                 placeholder="Ex: 5"
                 {...getFieldProps('minimumStock')}
               />
+                {...getFieldProps('minimumStock')}
+              />
             </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Preço*</label>
+            <label htmlFor="product-price" className="text-sm font-medium">Preço*</label>
             <AutoCurrencyInput
+              id="product-price"
+              value={Number(values.price)}
+              onChange={handlePriceChange}
+            />
               value={Number(values.price)}
               onChange={handlePriceChange}
             />
@@ -135,20 +139,22 @@ export const SimpleProductForm: React.FC<SimpleProductFormProps> = ({
               <p className="text-sm font-medium text-destructive">{errors.price}</p>
             )}
           </div>
-        </div>
-
-        <div className="space-y-6">
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Descrição</label>
+            <label htmlFor="product-description" className="text-sm font-medium">Descrição</label>
             <Textarea
+              id="product-description"
               placeholder="Descreva o produto"
               className="h-32 resize-none"
               maxLength={500}
               {...getFieldProps('description')}
             />
-          </div>
-
-          <div className="space-y-2">
+              className="h-32 resize-none"
+              maxLength={500}
+            <label htmlFor="product-imageUrl" className="text-sm font-medium">URL da imagem</label>
+            <Input
+              id="product-imageUrl"
+              placeholder="https://exemplo.com/imagem.jpg"
+              {...getFieldProps('imageUrl')}
+            />
             <label className="text-sm font-medium">URL da imagem</label>
             <Input
               placeholder="https://exemplo.com/imagem.jpg"
