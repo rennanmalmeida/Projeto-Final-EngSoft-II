@@ -71,11 +71,10 @@ export const AlertsPanel: React.FC = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="p-3 border rounded-lg">
-              <Skeleton className="h-4 w-3/4 mb-2" />
-              <Skeleton className="h-3 w-1/2" />
-            </div>
+          <div className="p-3 border rounded-lg">
+            <Skeleton className="h-4 w-3/4 mb-2" />
+            <Skeleton className="h-3 w-1/2" />
+          </div>
           ))}
         </CardContent>
       </Card>
