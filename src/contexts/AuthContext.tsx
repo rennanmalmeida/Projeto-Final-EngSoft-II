@@ -376,8 +376,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(false);
     }
   };
+// Código corrigido com o hook useMemo
+import { useMemo } from 'react';
 
-  const value = {
+// ... dentro do seu componente
+const value = useMemo(() => {
+  return {
     user,
     profile,
     session,
@@ -390,6 +394,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     updateProfile,
     refreshProfile,
   };
+}, [
+  user,
+  profile,
+  session,
+  loading,
+  signIn,
+  signUp,
+  signOut,
+  resetPassword,
+  updatePassword,
+  updateProfile,
+  refreshProfile,
+]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
