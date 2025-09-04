@@ -41,7 +41,7 @@ const NavItem: React.FC<NavItemProps> = ({ to, icon, label, active }) => {
 export const Sidebar: React.FC = () => {
   const location = useLocation();
   const currentPath = location.pathname;
-  const { signOut, profile, user } = useAuth();
+  const { signOut } = useAuth();
   const { isAdmin, isDeveloper, hasPermanentAdminRights, isMaster } = useAuthorization();
   
   const canAccessAdmin = isAdmin() || isDeveloper() || hasPermanentAdminRights() || isMaster();
