@@ -94,9 +94,7 @@ class EnhancedCacheService {
     return deleted;
   }
   
-  /**
-   * Limpa todo o cache
-   */
+ 
   clear(): void {
     const size = this.cache.size;
     this.cache.clear();
