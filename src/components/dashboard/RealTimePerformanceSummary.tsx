@@ -134,10 +134,9 @@ export const RealTimePerformanceSummary: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="space-y-2">
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="h-2 w-full" />
+              <div className="space-y-2">
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-2 w-full" />
               </div>
             ))}
           </div>
