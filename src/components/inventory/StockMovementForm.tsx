@@ -34,7 +34,7 @@ export const StockMovementForm: React.FC<StockMovementFormProps> = ({
   const [type, setType] = useState<'in' | 'out'>('in');
   const [quantity, setQuantity] = useState<number>(1);
   const [notes, setNotes] = useState<string>('');
-  const [supplierId, setSupplierId] = useState<string>('');
+  const [supplierId] = useState<string>('');
 
   // Form errors
   const [errors, setErrors] = useState(validateStockMovementForm('', 0));
