@@ -125,14 +125,13 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         handleClick();
           }
         }}
-        onTouchEnd={isUploading ? undefined : handleClick}
-        className={cn(
-          "flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-muted/50 hover:bg-muted transition-colors",
-          isUploading && "opacity-50 cursor-not-allowed"
-        )}
-        tabIndex={isUploading ? -1 : 0}
-      >
-        <div className="flex flex-col items-center justify-center p-6">
+          onTouchEnd={isUploading ? undefined : handleClick}
+          className={cn(
+            "flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-muted/50 hover:bg-muted transition-colors",
+            isUploading && "opacity-50 cursor-not-allowed"
+          )}
+              >
+                <div className="flex flex-col items-center justify-center p-6">
           <div className="flex items-center justify-center w-10 h-10 mb-3 bg-muted rounded-full">
             {isUploading ? (
               <div className="w-4 h-4 border-2 border-primary border-t-transparent animate-spin rounded-full" />
