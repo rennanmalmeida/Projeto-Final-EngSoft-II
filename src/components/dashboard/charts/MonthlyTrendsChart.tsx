@@ -55,18 +55,23 @@ export const MonthlyTrendsChart: React.FC = () => {
   }));
 
 // Tooltip.jsx
-const Tooltip = ({ active, payload }) => {
-  if (active && payload && payload.length) {
-    const data = payload[0].payload;
-    return (
-      <div className="bg-white p-3 border rounded shadow">
-        <p className="font-medium">{data.fullName}</p>
-        <p className="text-red-600">
-          Saídas: {data.saidas} unidades
-        </p>
-      </div>
-    );
+// TooltipContent.jsx
+const TooltipContent = ({ data }) => {
+  if (!data) {
+    return null;
   }
+
+  return (
+    <div className="bg-white p-3 border rounded shadow">
+      <p className="font-medium">{data.fullName}</p>
+      <p className="text-red-600">
+        Saídas: {data.saidas} unidades
+      </p>
+    </div>
+  );
+};
+
+export default TooltipContent;
   return null;
 };
 
