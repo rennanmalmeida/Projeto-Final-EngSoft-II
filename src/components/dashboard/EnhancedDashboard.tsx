@@ -11,12 +11,11 @@ import { RecentMovementsSection } from "./sections/RecentMovementsSection";
 
 export const EnhancedDashboard: React.FC = () => {
   const { 
-    stats, 
     movementsSummary, 
     categoryAnalysis, 
     monthlyComparison,
     isLoading 
-  } = useOptimizedDashboard();
+    } = useOptimizedDashboard();
 
   if (isLoading) {
     return (
