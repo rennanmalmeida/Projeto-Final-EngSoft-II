@@ -167,8 +167,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({
             )}
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Categoria</label>
+          <label className="text-sm font-medium" htmlFor="category-selector">Categoria</label>
+          <CategorySelector
+            id="category-selector"
+            value={formData.categoryId}
+            onChange={(value) => handleChange('categoryId', value)}
+          />
             <CategorySelector
               value={formData.categoryId}
               onChange={(value) => handleChange('categoryId', value)}
