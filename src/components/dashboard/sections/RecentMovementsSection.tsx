@@ -95,11 +95,11 @@ export const RecentMovementsSection: React.FC = () => {
           <CardTitle>Movimentações Recentes</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {Array(5).fill(0).map((_, i) => (
-              <Skeleton key={i} className="h-16 w-full" />
-            ))}
-          </div>
+         <div className="space-y-4">
+  {Array(5).fill(0).map((_, i) => (
+    <Skeleton key={`skeleton-${i}`} className="h-16 w-full" />
+  ))}
+</div>
         </CardContent>
       </Card>
     );
