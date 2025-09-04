@@ -18,7 +18,7 @@ export const MobileOptimizedLayout: React.FC<MobileOptimizedLayoutProps> = ({
   subtitle,
   actions
 }) => {
-  const isMobile = useIsMobile();
+  const  = useIsMobile();
 
   return (
     <div className={cn(
