@@ -67,7 +67,7 @@ const SuppliersPage: React.FC = () => {
             {loadingSuppliers ? (
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {Array(6).fill(0).map((_, index) => (
-                  <Skeleton key={index} className="h-32" />
+                  <Skeleton key={crypto.randomUUID()} className="h-32" />
                 ))}
               </div>
             ) : suppliers.length === 0 ? (
