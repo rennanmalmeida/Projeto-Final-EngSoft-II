@@ -20,9 +20,12 @@ export const EnhancedDashboard: React.FC = () => {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {Array(6).fill(0).map((_, i) => (
-          <Skeleton key={i} className="h-64" />
-        ))}
+        <Skeleton className="h-64" />
+        <Skeleton className="h-64" />
+        <Skeleton className="h-64" />
+        <Skeleton className="h-64" />
+        <Skeleton className="h-64" />
+        <Skeleton className="h-64" />
       </div>
     );
   }
