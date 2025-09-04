@@ -20,7 +20,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 const DashboardPage: React.FC = () => {
   const { toast } = useToast();
-  const isMobile = useIsMobile();
+  const = useIsMobile();
   const { refreshAll: refreshOptimized } = useOptimizedDashboard();
   const { products, fetchProducts, loadingProducts } = useData();
   const { recentMovements, refreshAll: refreshDashboard } = useDashboard();
