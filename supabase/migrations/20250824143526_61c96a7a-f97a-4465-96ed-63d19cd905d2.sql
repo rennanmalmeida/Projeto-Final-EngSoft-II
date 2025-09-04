@@ -75,20 +75,22 @@ BEGIN
     product_not_found_message CONSTANT TEXT := 'Produto não encontrado';
 BEGIN
     -- ... your logic
-   DO $$
+DO $$
 DECLARE
-    -- Define a constant for the repeated literal.
     PRODUCT_NOT_FOUND_MESSAGE CONSTANT TEXT := 'Produto não encontrado';
+    MESSAGE_KEY CONSTANT TEXT := 'message';  -- Nova constante para a chave
 BEGIN
-    -- ... your logic
+    -- ... seu código
+
     IF NOT FOUND THEN
         SELECT json_build_object(
             'isValid', false,
             'currentStock', 0,
-            -- Use the constant here instead of the literal string.
-            'message', PRODUCT_NOT_FOUND_MESSAGE
+            MESSAGE_KEY, PRODUCT_NOT_FOUND_MESSAGE  -- Usando a constante para a chave
         );
     END IF;
+
+    -- ... resto do seu código
 END $$;
   -- some other part of the code
   IF NOT FOUND THEN
