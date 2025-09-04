@@ -94,7 +94,7 @@ export const AutoCurrencyInput: React.FC<AutoCurrencyInputProps> = ({
       setDisplayValue('');
     }
     
-    // Seleciona todo o texto
+   
     setTimeout(() => {
       e.target.select();
     }, 0);
