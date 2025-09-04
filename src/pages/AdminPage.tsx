@@ -102,8 +102,8 @@ const AdminPage = () => {
           <TabsContent value="system">
             {/* Overview Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-              {adminModules.map((module, index) => (
-                <Card key={index} className="cursor-pointer hover:shadow-lg transition-shadow">
+              {adminModules.map((module, crypto.randomUUID()) => (
+                <Card key={crypto.randomUUID()} className="cursor-pointer hover:shadow-lg transition-shadow">
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <div className={`p-3 rounded-full ${module.color} text-white`}>
