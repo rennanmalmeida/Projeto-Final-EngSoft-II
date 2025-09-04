@@ -27,8 +27,8 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {Array(8).fill(0).map((_, index) => (
-          <Skeleton key={index} className="h-80 w-full rounded-lg" />
-        ))}
+
+<Skeleton key={crypto.randomUUID()} className="h-80 w-full rounded-lg" />        ))}
       </div>
     );
   }
