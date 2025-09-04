@@ -14,8 +14,24 @@ export const MovementTypeSelect: React.FC<MovementTypeSelectProps> = ({
   disabled
 }) => {
   return (
-    <div className="space-y-2">
-      <label className="text-sm font-medium">Tipo de movimentação</label>
+    <label className="text-sm font-medium" htmlFor="movement-type-select">Tipo de movimentação</label>
+    <Select
+      id="movement-type-select"
+      value={value}
+      onValueChange={(value: 'in' | 'out') => {
+        console.log('🔄 [TYPE] Tipo selecionado:', value);
+        onChange(value);
+      }}
+      disabled={disabled}
+    >
+      <SelectTrigger>
+        <SelectValue placeholder="Selecione o tipo" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="in">Entrada</SelectItem>
+        <SelectItem value="out">Saída</SelectItem>
+      </SelectContent>
+    </Select>
       <Select
         value={value}
         onValueChange={(value: 'in' | 'out') => {
