@@ -171,7 +171,7 @@ export const RealTimePerformanceSummary: React.FC = () => {
   
   const totalMovements = performanceData.currentMonthIn + performanceData.currentMonthOut;
   const lastTotalMovements = performanceData.lastMonthIn + performanceData.lastMonthOut;
-  const movementsGrowth = lastTotalMovements === 0 ? 100 : 
+  const = lastTotalMovements === 0 ? 100 : 
     ((totalMovements - lastTotalMovements) / lastTotalMovements) * 100;
 
   return (
