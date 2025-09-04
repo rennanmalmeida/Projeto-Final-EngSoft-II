@@ -72,9 +72,125 @@ export const StockMovementModal: React.FC<StockMovementModalProps> = ({
     console.log(`🔍 [MODAL] === FIM VALIDAÇÃO ===`);
     return true;
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Helper: log analysis after movement
+    const logStockChangeAnalysis = (before: number, after: number, type: 'in' | 'out', quantity: number) => {
+      const expectedChange = type === 'in' ? quantity : -quantity;
+      const actualChange = after - before;
+      console.log(`🔍 [MODAL] ANÁLISE:`);
+      console.log(`   - Mudança esperada: ${expectedChange}`);
+      console.log(`   - Mudança real: ${actualChange}`);
+      console.log(`   - Status: ${actualChange === expectedChange ? '✅ CORRETO' : '❌ INCORRETO'}`);
+      if (actualChange !== expectedChange) {
+        console.error(`🚨 [MODAL] DUPLICAÇÃO DETECTADA!`);
+        console.error(`   - Movimentação: ${type} ${quantity}`);
+        console.error(`   - Esperado: ${expectedChange}`);
+        console.error(`   - Real: ${actualChange}`);
+      }
+    };
+
+    console.log(`🚀 [MODAL] === INÍCIO SUBMIT ===`);
+    console.log(`🚀 [MODAL] Dados do formulário:`, formData);
+    console.log(`🚀 [MODAL] isSubmitting atual:`, isSubmitting);
+    console.log(`🚀 [MODAL] Estoque atual:`, currentStock);
+    console.log(`🚀 [MODAL] Timestamp:`, new Date().toISOString());
+
+    if (!validateForm() || isSubmitting) {
+      console.log('🚫 [MODAL] Submit bloqueado - validação falhou ou já em andamento');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // BUSCAR ESTOQUE ANTES DA MOVIMENTAÇÃO
+      const { data: productBefore, error: productError } = await supabase
+        .from('products')
+        .select('quantity, name')
+        .eq('id', productId)
+        .single();
+
+      if (productError) throw productError;
+
+      // Usar a função existente validate_stock_movement para validar
+      const { data: validation, error: validationErr } = await supabase.rpc(
+        'validate_stock_movement',
+        {
+          product_id_param: productId,
+          quantity_param: formData.quantity,
+          type_param: formData.type
+        }
+      );
+
+      if (validationErr) throw validationErr;
+
+      const validationResult = validation as any;
+      if (!validationResult.isValid) {
+        setValidationError(validationResult.message);
+        return;
+      }
+
+      // Inserir movimentação com fornecedor obrigatório
+      const movementData = {
+        product_id: productId,
+        quantity: formData.quantity,
+        type: formData.type,
+        notes: formData.notes.trim() || null,
+        supplier_id: formData.supplierId,
+        date: new Date().toISOString()
+      };
+
+      const { data: insertedMovement, error: insertError } = await supabase
+        .from('stock_movements')
+        .insert(movementData)
+        .select()
+        .single();
+
+      if (insertError) throw insertError;
+
+      // BUSCAR ESTOQUE DEPOIS DA MOVIMENTAÇÃO
+      const { data: productAfter, error: productAfterError } = await supabase
+        .from('products')
+        .select('quantity, name')
+        .eq('id', productId)
+        .single();
+
+      if (!productAfterError && productBefore && productAfter) {
+        logStockChangeAnalysis(
+          productBefore.quantity,
+          productAfter.quantity,
+          formData.type,
+          formData.quantity
+        );
+      }
+
+      toast({
+        title: "Movimentação registrada",
+        description: `${formData.type === 'in' ? 'Entrada' : 'Saída'} de ${formData.quantity} unidades registrada com sucesso.`,
+      });
+
+      setFormData({
+        type: 'in',
+        quantity: 1,
+        notes: '',
+        supplierId: ''
+      });
+
+      onSuccess();
+      onClose();
+
+    } catch (error: any) {
+      toast({
+        title: "Erro",
+        description: error.message || "Erro ao registrar movimentação",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
     
     console.log(`🚀 [MODAL] === INÍCIO SUBMIT ===`);
     console.log(`🚀 [MODAL] Dados do formulário:`, formData);
