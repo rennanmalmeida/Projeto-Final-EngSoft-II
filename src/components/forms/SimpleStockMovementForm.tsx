@@ -135,8 +135,13 @@ export const SimpleStockMovementForm: React.FC<SimpleStockMovementFormProps> = (
             )}
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Observações (opcional)</label>
+          <label className="text-sm font-medium" htmlFor="notes">Observações (opcional)</label>
+          <Textarea
+            id="notes"
+            placeholder="Adicione observações sobre esta movimentação..."
+            {...getFieldProps('notes')}
+            disabled={isSubmitting || isLoading}
+          />
             <Textarea
               placeholder="Adicione observações sobre esta movimentação..."
               {...getFieldProps('notes')}
