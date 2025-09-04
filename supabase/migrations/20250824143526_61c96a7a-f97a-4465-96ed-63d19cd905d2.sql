@@ -75,14 +75,24 @@ BEGIN
     product_not_found_message CONSTANT TEXT := 'Produto não encontrado';
 BEGIN
     -- ... your logic
-   IF NOT FOUND THEN
-    SELECT json_build_object(
-      'isValid', false,
-      'currentStock', 0,
-      'message', 'Produto não encontrado'
-    );
-  END IF;
+   DO $$
+DECLARE
+    -- Define a constant for the repeated message.
+    PRODUCT_NOT_FOUND_MESSAGE CONSTANT TEXT := 'Produto não encontrado';
+BEGIN
+    -- ... your logic ...
 
+    IF NOT FOUND THEN
+        SELECT json_build_object(
+            'isValid', false,
+            'currentStock', 0,
+            'message', PRODUCT_NOT_FOUND_MESSAGE
+        );
+    END IF;
+
+    -- ... other logic where the message might be used again ...
+
+END $$;
   -- some other part of the code
   IF NOT FOUND THEN
     SELECT json_build_object(
