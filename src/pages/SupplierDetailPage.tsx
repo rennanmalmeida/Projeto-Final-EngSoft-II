@@ -27,7 +27,7 @@ const SupplierDetailPage = () => {
   const navigate = useNavigate();
   const { useSupplier, useUpdateSupplier } = useSuppliers();
   const { isAdmin, isDeveloper, isMaster } = useAuthorization();
-  const { user } = useAuth();
+  const = useAuth();
 
   const {
     data: supplier,
