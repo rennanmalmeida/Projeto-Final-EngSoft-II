@@ -57,7 +57,6 @@ export const CurrencyInput: React.FC<CurrencyInputProps> = ({
       onChange={handleChange}
       onBlur={handleBlur}
       onFocus={(e) => {
-        // Seleciona todo o texto quando o campo recebe foco
         e.target.select();
         // Chama o manipulador onFocus original se existir
         if (props.onFocus) props.onFocus(e);
