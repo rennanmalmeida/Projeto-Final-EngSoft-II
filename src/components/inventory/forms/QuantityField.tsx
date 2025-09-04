@@ -14,8 +14,17 @@ export const QuantityField: React.FC<QuantityFieldProps> = ({
   disabled = false
 }) => {
   return (
-    <div className="space-y-2">
-      <label className="text-sm font-medium">Quantidade *</label>
+    <label className="text-sm font-medium" htmlFor="quantity-input">Quantidade *</label>
+    <Input
+      id="quantity-input"
+      type="number"
+      min="1"
+      step="1"
+      value={value === 0 ? '' : value}
+      onChange={(e) => onChange(parseInt(e.target.value) || 0)}
+      disabled={disabled}
+      placeholder="Digite a quantidade"
+    />
       <Input
         type="number"
         min="1"
