@@ -30,7 +30,7 @@ export const ReportFilters: React.FC<ReportFiltersProps> = ({
   const [category, setCategory] = useState("all");
   const [sortBy, setSortBy] = useState<string | undefined>(undefined);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-  const { toast } = useToast();
+  const  = useToast();
 
   // Debounce search to avoid too many requests
   useEffect(() => {
