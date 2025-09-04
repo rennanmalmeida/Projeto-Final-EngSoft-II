@@ -33,9 +33,21 @@ const FormField = <
   ...props
 }: ControllerProps<TFieldValues, TName>) => {
   return (
-    <FormFieldContext.Provider value={{ name: props.name }}>
-      <Controller {...props} />
-    </FormFieldContext.Provider>
+   function Component() {
+
+  const obj = useMemo(() => ({foo: 'bar'}), []); // value is cached by useMemo
+
+  return (
+
+    <SomeContext.Provider value={obj}> { /* Compliant */ }
+
+      <SomeComponent />
+
+    </SomeContext.Provider>
+
+  );
+
+}
   )
 }
 
