@@ -114,13 +114,23 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         className="hidden"
         disabled={isUploading}
       />
-      
       <div
-        onClick={handleClick}
+        role="button"
+        tabIndex={0}
+        aria-disabled={isUploading}
+        onClick={isUploading ? undefined : handleClick}
+        onKeyDown={e => {
+          if (!isUploading && (e.key === 'Enter' || e.key === ' ')) {
+        e.preventDefault();
+        handleClick();
+          }
+        }}
+        onTouchEnd={isUploading ? undefined : handleClick}
         className={cn(
           "flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-muted/50 hover:bg-muted transition-colors",
           isUploading && "opacity-50 cursor-not-allowed"
         )}
+        tabIndex={isUploading ? -1 : 0}
       >
         <div className="flex flex-col items-center justify-center p-6">
           <div className="flex items-center justify-center w-10 h-10 mb-3 bg-muted rounded-full">
