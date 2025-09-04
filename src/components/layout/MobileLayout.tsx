@@ -119,21 +119,30 @@ export const MobileCardLayout: React.FC<{
   className?: string;
   onClick?: () => void;
 }> = ({ children, className, onClick }) => {
-  return (
-    <div 
-      className={cn(
-        "bg-card text-card-foreground",
-        "rounded-lg border shadow-sm",
-        "p-4 space-y-3",
-        "active:bg-accent/50 transition-colors",
-        onClick && "cursor-pointer",
-        className
-      )}
-      onClick={onClick}
-    >
-      {children}
-    </div>
-  );
+  <div
+    className={cn(
+      "bg-card text-card-foreground",
+      "rounded-lg border shadow-sm",
+      "p-4 space-y-3",
+      onClick && "active:bg-accent/50 transition-colors cursor-pointer",
+      className
+    )}
+    role={onClick ? "button" : undefined}
+    tabIndex={onClick ? 0 : undefined}
+    onClick={onClick}
+    onKeyDown={onClick ? (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        onClick();
+      }
+    } : undefined}
+    onTouchStart={onClick ? (e) => {
+      // Optionally handle touch for mobile feedback
+    } : undefined}
+    aria-pressed={onClick ? false : undefined}
+  >
+    {children}
+  </div> );
 };
 
 // Grid responsivo específico para mobile
