@@ -10,7 +10,7 @@ type CacheItem<T> = {
 };
 
 class EnhancedCacheService {
-  private cache: Map<string, CacheItem<any>> = new Map();
+ private readonly cache: Map<string, CacheItem<any>> = new Map();
   private cleanupInterval: NodeJS.Timeout | null = null;
   private readonly DEFAULT_TTL = 5 * 60 * 1000; // 5 minutos
   private readonly CLEANUP_INTERVAL = 2 * 60 * 1000; // 2 minutos
