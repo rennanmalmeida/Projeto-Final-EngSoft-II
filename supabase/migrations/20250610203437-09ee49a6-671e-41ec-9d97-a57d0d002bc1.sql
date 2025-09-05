@@ -1,3 +1,9 @@
+DO $$
+DECLARE
+  TARGET_SCHEMA CONSTANT TEXT := 'public';
+BEGIN
+  -- Apenas declaração da constante, usada nas consultas abaixo
+END$$;
 
 -- Verificar todas as triggers na tabela stock_movements
 SELECT 
@@ -10,7 +16,7 @@ FROM pg_trigger t
 JOIN pg_class c ON t.tgrelid = c.oid
 JOIN pg_namespace n ON c.relnamespace = n.oid
 WHERE c.relname = 'stock_movements'
-AND n.nspname = 'public'
+AND n.nspname = TARGET_SCHEMA
 AND NOT t.tgisinternal
 ORDER BY c.relname ASC, t.tgname ASC;
 
@@ -24,7 +30,7 @@ FROM pg_trigger t
 JOIN pg_class c ON t.tgrelid = c.oid
 JOIN pg_namespace n ON c.relnamespace = n.oid
 WHERE c.relname = 'products'
-AND n.nspname = 'public'
+AND n.nspname = TARGET_SCHEMA
 AND NOT t.tgisinternal
 ORDER BY c.relname ASC, t.tgname ASC;
 
@@ -36,6 +42,6 @@ FROM pg_trigger t
 JOIN pg_proc p ON t.tgfoid = p.oid
 JOIN pg_class c ON t.tgrelid = c.oid
 JOIN pg_namespace n ON c.relnamespace = n.oid
-WHERE n.nspname = 'public'
+WHERE n.nspname = TARGET_SCHEMA
 AND p.proname = 'update_product_quantity'
 GROUP BY p.proname;
