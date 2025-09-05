@@ -6,6 +6,16 @@
 
 SET app.schema = 'public';
 
+--
+-- Definir constante para evitar repetição do literal
+--
+DO $$
+DECLARE
+  APP_SCHEMA_KEY CONSTANT TEXT := 'app.schema';
+BEGIN
+  -- Apenas declaração da constante, será usada nas consultas.
+END$$;
+
 ---
 
 --
@@ -22,7 +32,7 @@ FROM pg_trigger t
 JOIN pg_class c ON t.tgrelid = c.oid
 JOIN pg_namespace n ON c.relnamespace = n.oid
 WHERE c.relname = 'stock_movements'
-  AND n.nspname = current_setting('app.schema')
+  AND n.nspname = current_setting(APP_SCHEMA_KEY)
   AND NOT t.tgisinternal;
 
 ---
@@ -37,7 +47,7 @@ FROM pg_trigger t
 JOIN pg_class c ON t.tgrelid = c.oid
 JOIN pg_namespace n ON c.relnamespace = n.oid
 WHERE c.relname = 'products'
-  AND n.nspname = current_setting('app.schema')
+  AND n.nspname = current_setting(APP_SCHEMA_KEY)
   AND NOT t.tgisinternal;
 
 ---
@@ -69,7 +79,7 @@ FROM pg_trigger t
 JOIN pg_class c ON t.tgrelid = c.oid
 JOIN pg_proc p ON t.tgfoid = p.oid
 JOIN pg_namespace n ON c.relnamespace = n.oid
-WHERE n.nspname = current_setting('app.schema')
+WHERE n.nspname = current_setting(APP_SCHEMA_KEY)
   AND c.relname IN ('stock_movements', 'products')
   AND NOT t.tgisinternal
 ORDER BY c.relname ASC, t.tgname ASC;
