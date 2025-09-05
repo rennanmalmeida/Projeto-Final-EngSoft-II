@@ -14,8 +14,11 @@ DECLARE
   product_name TEXT;
   result JSON;
 
-  -- Constante para a chave JSON
+  -- Constantes para chaves JSON
+  JSON_KEY_IS_VALID      CONSTANT TEXT := 'isValid';
+  JSON_KEY_MESSAGE       CONSTANT TEXT := 'message';
   JSON_KEY_CURRENT_STOCK CONSTANT TEXT := 'currentStock';
+  JSON_KEY_PRODUCT_NAME  CONSTANT TEXT := 'productName';
 BEGIN
   -- Buscar produto
   SELECT quantity, name INTO current_stock, product_name
@@ -24,9 +27,9 @@ BEGIN
   
   IF NOT FOUND THEN
     SELECT json_build_object(
-      'isValid', false,
+      JSON_KEY_IS_VALID, false,
       JSON_KEY_CURRENT_STOCK, 0,
-      'message', 'Produto não encontrado'
+      JSON_KEY_MESSAGE, 'Produto não encontrado'
     ) INTO result;
     RETURN result;
   END IF;
@@ -35,19 +38,21 @@ BEGIN
   IF type_param = 'out' THEN
     IF current_stock = 0 THEN
       SELECT json_build_object(
-        'isValid', false,
+        JSON_KEY_IS_VALID, false,
         JSON_KEY_CURRENT_STOCK, current_stock,
-        'message', format('Produto "%s" sem estoque disponível', product_name)
+        JSON_KEY_MESSAGE, format('Produto "%s" sem estoque disponível', product_name)
       ) INTO result;
       RETURN result;
     END IF;
     
     IF current_stock < quantity_param THEN
       SELECT json_build_object(
-        'isValid', false,
+        JSON_KEY_IS_VALID, false,
         JSON_KEY_CURRENT_STOCK, current_stock,
-        'message', format('Estoque insuficiente para "%s". Disponível: %s, Solicitado: %s', 
-          product_name, current_stock, quantity_param)
+        JSON_KEY_MESSAGE, format(
+          'Estoque insuficiente para "%s". Disponível: %s, Solicitado: %s', 
+          product_name, current_stock, quantity_param
+        )
       ) INTO result;
       RETURN result;
     END IF;
@@ -55,9 +60,9 @@ BEGIN
   
   -- Validação passou
   SELECT json_build_object(
-    'isValid', true,
+    JSON_KEY_IS_VALID, true,
     JSON_KEY_CURRENT_STOCK, current_stock,
-    'productName', product_name
+    JSON_KEY_PRODUCT_NAME, product_name
   ) INTO result;
   
   RETURN result;
