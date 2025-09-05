@@ -12,7 +12,7 @@ JOIN pg_namespace n ON c.relnamespace = n.oid
 WHERE c.relname = 'stock_movements'
 AND n.nspname = 'public'
 AND NOT t.tgisinternal
-ORDER BY t.tgname;
+ORDER BY c.relname ASC, t.tgname ASC;
 
 -- Verificar se há múltiplas triggers fazendo UPDATE na tabela products
 SELECT 
