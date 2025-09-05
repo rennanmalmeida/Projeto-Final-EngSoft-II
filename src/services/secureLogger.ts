@@ -3,7 +3,8 @@
  * Serviço de logging seguro que não expõe dados sensíveis no console
  */
 export class SecureLogger {
-  private static isDevelopment = import.meta.env.DEV;
+ private static readonly isDevelopment = import.meta.env.DEV;
+
   
   /**
    * Serializa dados removendo informações sensíveis
