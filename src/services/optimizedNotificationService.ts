@@ -76,7 +76,8 @@ class OptimizedNotificationService {
       // Adicionar alertas de movimentações de alto valor
       if (highValueMovements) {
         highValueMovements.forEach(movement => {
-          const value = movement.quantity * (movement.products as any).price;
+        const value = movement.quantity * (movement.products?.price ?? 0);
+
           if (value > 1000) {
             alerts.push({
               id: `high-value-${movement.id}`,
