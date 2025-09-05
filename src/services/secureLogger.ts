@@ -14,7 +14,8 @@ export class SecureLogger {
     
     if (typeof data === 'string') {
       // Não logar dados que parecem ser IDs ou tokens
-      if (data.length > 20 && (data.includes('-') || data.match(/^[a-f0-9]+$/i))) {
+     if (data.length > 20 && (data.includes('-') || /^[a-f0-9]+$/i.test(data))) {
+
         return '[SANITIZED_ID]';
       }
       // Mascarar emails
