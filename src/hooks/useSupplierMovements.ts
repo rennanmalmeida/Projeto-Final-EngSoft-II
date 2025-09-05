@@ -42,7 +42,7 @@ export const useSupplierMovements = () => {
           const quantity = movement.quantity || 0;
 
           if (supplierMap.has(supplierId)) {
-            const existing = supplierMap.get(supplierId)!;
+         const existing = supplierMap.get(supplierId);
             existing.totalOut += quantity;
           } else {
             supplierMap.set(supplierId, {
