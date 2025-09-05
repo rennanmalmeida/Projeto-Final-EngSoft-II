@@ -114,7 +114,7 @@ BEGIN
       SELECT json_build_object(
         'isValid', false,
         'currentStock', current_stock,
-        'message', format('Produto "%s" sem estoque disponível', product_name)
+        format('Produto "%s" sem estoque disponível', product_name)
       ) INTO result;
       RETURN result;
     END IF;
@@ -123,7 +123,7 @@ BEGIN
       SELECT json_build_object(
         'isValid', false,
         'currentStock', current_stock,
-        'message', format('Estoque insuficiente para "%s". Disponível: %s, Solicitado: %s', 
+         format('Estoque insuficiente para "%s". Disponível: %s, Solicitado: %s', 
           product_name, current_stock, quantity_param)
       ) INTO result;
       RETURN result;
