@@ -1,31 +1,26 @@
-
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, useMemo, ReactNode } from 'react';
 import { Product, StockMovement, Supplier, Category } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 
 interface DataContextType {
-  // Products
   products: Product[];
   loadingProducts: boolean;
   fetchProducts: () => Promise<void>;
   createProduct: (product: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
   updateProduct: (id: string, product: Partial<Product>) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;
-  
-  // Stock Movements
+
   stockMovements: StockMovement[];
   loadingMovements: boolean;
   fetchStockMovements: () => Promise<void>;
   createStockMovement: (movement: Omit<StockMovement, 'id' | 'date' | 'createdBy' | 'updatedAt'>) => Promise<void>;
-  
-  // Suppliers
+
   suppliers: Supplier[];
   loadingSuppliers: boolean;
   fetchSuppliers: () => Promise<void>;
   createSupplier: (supplier: Omit<Supplier, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
-  
-  // Categories
+
   categories: Category[];
   loadingCategories: boolean;
   fetchCategories: () => Promise<void>;
@@ -33,7 +28,7 @@ interface DataContextType {
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
-// Helper functions to convert between database and app formats
+// --- Helpers ---
 const convertProductFromDB = (dbProduct: any): Product => ({
   id: dbProduct.id,
   name: dbProduct.name,
@@ -86,41 +81,33 @@ const convertCategoryFromDB = (dbCategory: any): Category => ({
   createdAt: dbCategory.created_at,
 });
 
+// --- Provider ---
 export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { toast } = useToast();
-  
-  // State
+
+  // --- States ---
   const [products, setProducts] = useState<Product[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(false);
-  
+
   const [stockMovements, setStockMovements] = useState<StockMovement[]>([]);
   const [loadingMovements, setLoadingMovements] = useState(false);
-  
+
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [loadingSuppliers, setLoadingSuppliers] = useState(false);
-  
+
   const [categories, setCategories] = useState<Category[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(false);
 
-  // Products functions
+  // --- Products ---
   const fetchProducts = useCallback(async () => {
     setLoadingProducts(true);
     try {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .order('name');
-      
+      const { data, error } = await supabase.from('products').select('*').order('name');
       if (error) throw error;
-      const convertedProducts = (data || []).map(convertProductFromDB);
-      setProducts(convertedProducts);
+      setProducts((data || []).map(convertProductFromDB));
     } catch (error) {
       console.error('Error fetching products:', error);
-      toast({
-        title: "Erro",
-        description: "Erro ao carregar produtos",
-        variant: "destructive",
-      });
+      toast({ title: 'Erro', description: 'Erro ao carregar produtos', variant: 'destructive' });
     } finally {
       setLoadingProducts(false);
     }
@@ -143,22 +130,12 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         })
         .select()
         .single();
-      
       if (error) throw error;
-      
-      const convertedProduct = convertProductFromDB(data);
-      setProducts(prev => [...prev, convertedProduct]);
-      toast({
-        title: "Sucesso",
-        description: "Produto criado com sucesso",
-      });
+      setProducts(prev => [...prev, convertProductFromDB(data)]);
+      toast({ title: 'Sucesso', description: 'Produto criado com sucesso' });
     } catch (error) {
       console.error('Error creating product:', error);
-      toast({
-        title: "Erro",
-        description: "Erro ao criar produto",
-        variant: "destructive",
-      });
+      toast({ title: 'Erro', description: 'Erro ao criar produto', variant: 'destructive' });
       throw error;
     }
   }, [toast]);
@@ -175,76 +152,40 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (productData.minimumStock !== undefined) updateData.minimum_stock = productData.minimumStock;
       if (productData.lastModifiedBy !== undefined) updateData.last_modified_by = productData.lastModifiedBy;
 
-      const { data, error } = await supabase
-        .from('products')
-        .update(updateData)
-        .eq('id', id)
-        .select()
-        .single();
-      
+      const { data, error } = await supabase.from('products').update(updateData).eq('id', id).select().single();
       if (error) throw error;
-      
-      const convertedProduct = convertProductFromDB(data);
-      setProducts(prev => prev.map(p => p.id === id ? convertedProduct : p));
-      toast({
-        title: "Sucesso",
-        description: "Produto atualizado com sucesso",
-      });
+      setProducts(prev => prev.map(p => (p.id === id ? convertProductFromDB(data) : p)));
+      toast({ title: 'Sucesso', description: 'Produto atualizado com sucesso' });
     } catch (error) {
       console.error('Error updating product:', error);
-      toast({
-        title: "Erro",
-        description: "Erro ao atualizar produto",
-        variant: "destructive",
-      });
+      toast({ title: 'Erro', description: 'Erro ao atualizar produto', variant: 'destructive' });
       throw error;
     }
   }, [toast]);
 
   const deleteProduct = useCallback(async (id: string) => {
     try {
-      const { error } = await supabase
-        .from('products')
-        .delete()
-        .eq('id', id);
-      
+      const { error } = await supabase.from('products').delete().eq('id', id);
       if (error) throw error;
-      
       setProducts(prev => prev.filter(p => p.id !== id));
-      toast({
-        title: "Sucesso",
-        description: "Produto excluído com sucesso",
-      });
+      toast({ title: 'Sucesso', description: 'Produto excluído com sucesso' });
     } catch (error) {
       console.error('Error deleting product:', error);
-      toast({
-        title: "Erro",
-        description: "Erro ao excluir produto",
-        variant: "destructive",
-      });
+      toast({ title: 'Erro', description: 'Erro ao excluir produto', variant: 'destructive' });
       throw error;
     }
   }, [toast]);
 
-  // Stock Movements functions
+  // --- Stock Movements ---
   const fetchStockMovements = useCallback(async () => {
     setLoadingMovements(true);
     try {
-      const { data, error } = await supabase
-        .from('stock_movements')
-        .select('*')
-        .order('date', { ascending: false });
-      
+      const { data, error } = await supabase.from('stock_movements').select('*').order('date', { ascending: false });
       if (error) throw error;
-      const convertedMovements = (data || []).map(convertStockMovementFromDB);
-      setStockMovements(convertedMovements);
+      setStockMovements((data || []).map(convertStockMovementFromDB));
     } catch (error) {
       console.error('Error fetching stock movements:', error);
-      toast({
-        title: "Erro",
-        description: "Erro ao carregar movimentações",
-        variant: "destructive",
-      });
+      toast({ title: 'Erro', description: 'Erro ao carregar movimentações', variant: 'destructive' });
     } finally {
       setLoadingMovements(false);
     }
@@ -265,47 +206,27 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         })
         .select()
         .single();
-      
       if (error) throw error;
-      
-      const convertedMovement = convertStockMovementFromDB(data);
-      setStockMovements(prev => [convertedMovement, ...prev]);
-      await fetchProducts(); // Refresh products to update quantities
-      
-      toast({
-        title: "Sucesso",
-        description: "Movimentação registrada com sucesso",
-      });
+      setStockMovements(prev => [convertStockMovementFromDB(data), ...prev]);
+      await fetchProducts();
+      toast({ title: 'Sucesso', description: 'Movimentação registrada com sucesso' });
     } catch (error) {
       console.error('Error creating stock movement:', error);
-      toast({
-        title: "Erro",
-        description: "Erro ao registrar movimentação",
-        variant: "destructive",
-      });
+      toast({ title: 'Erro', description: 'Erro ao registrar movimentação', variant: 'destructive' });
       throw error;
     }
   }, [toast, fetchProducts]);
 
-  // Suppliers functions
+  // --- Suppliers ---
   const fetchSuppliers = useCallback(async () => {
     setLoadingSuppliers(true);
     try {
-      const { data, error } = await supabase
-        .from('suppliers')
-        .select('*')
-        .order('name');
-      
+      const { data, error } = await supabase.from('suppliers').select('*').order('name');
       if (error) throw error;
-      const convertedSuppliers = (data || []).map(convertSupplierFromDB);
-      setSuppliers(convertedSuppliers);
+      setSuppliers((data || []).map(convertSupplierFromDB));
     } catch (error) {
       console.error('Error fetching suppliers:', error);
-      toast({
-        title: "Erro",
-        description: "Erro ao carregar fornecedores",
-        variant: "destructive",
-      });
+      toast({ title: 'Erro', description: 'Erro ao carregar fornecedores', variant: 'destructive' });
     } finally {
       setLoadingSuppliers(false);
     }
@@ -328,84 +249,66 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         })
         .select()
         .single();
-      
       if (error) throw error;
-      
-      const convertedSupplier = convertSupplierFromDB(data);
-      setSuppliers(prev => [...prev, convertedSupplier]);
-      toast({
-        title: "Sucesso",
-        description: "Fornecedor criado com sucesso",
-      });
+      setSuppliers(prev => [...prev, convertSupplierFromDB(data)]);
+      toast({ title: 'Sucesso', description: 'Fornecedor criado com sucesso' });
     } catch (error) {
       console.error('Error creating supplier:', error);
-      toast({
-        title: "Erro",
-        description: "Erro ao criar fornecedor",
-        variant: "destructive",
-      });
+      toast({ title: 'Erro', description: 'Erro ao criar fornecedor', variant: 'destructive' });
       throw error;
     }
   }, [toast]);
 
-  // Categories functions
+  // --- Categories ---
   const fetchCategories = useCallback(async () => {
     setLoadingCategories(true);
     try {
-      const { data, error } = await supabase
-        .from('categories')
-        .select('*')
-        .order('name');
-      
+      const { data, error } = await supabase.from('categories').select('*').order('name');
       if (error) throw error;
-      const convertedCategories = (data || []).map(convertCategoryFromDB);
-      setCategories(convertedCategories);
+      setCategories((data || []).map(convertCategoryFromDB));
     } catch (error) {
       console.error('Error fetching categories:', error);
-      toast({
-        title: "Erro",
-        description: "Erro ao carregar categorias",
-        variant: "destructive",
-      });
+      toast({ title: 'Erro', description: 'Erro ao carregar categorias', variant: 'destructive' });
     } finally {
       setLoadingCategories(false);
     }
   }, [toast]);
 
-  const value: DataContextType = {
+  // --- Memoized Context Value ---
+  const value = useMemo<DataContextType>(() => ({
     products,
     loadingProducts,
     fetchProducts,
     createProduct,
     updateProduct,
     deleteProduct,
-    
+
     stockMovements,
     loadingMovements,
     fetchStockMovements,
     createStockMovement,
-    
+
     suppliers,
     loadingSuppliers,
     fetchSuppliers,
     createSupplier,
-    
+
     categories,
     loadingCategories,
     fetchCategories,
-  };
+  }), [
+    products, loadingProducts, fetchProducts, createProduct, updateProduct, deleteProduct,
+    stockMovements, loadingMovements, fetchStockMovements, createStockMovement,
+    suppliers, loadingSuppliers, fetchSuppliers, createSupplier,
+    categories, loadingCategories, fetchCategories,
+  ]);
 
-  return (
-    <DataContext.Provider value={value}>
-      {children}
-    </DataContext.Provider>
-  );
+  return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 };
 
+// --- Custom Hook ---
 export const useData = () => {
   const context = useContext(DataContext);
-  if (context === undefined) {
-    throw new Error('useData must be used within a DataProvider');
-  }
+  if (!context) throw new Error('useData must be used within a DataProvider');
   return context;
 };
