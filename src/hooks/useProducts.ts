@@ -16,14 +16,15 @@ export function useProducts() {
     });
   };
 
-  const useProduct = (id?: string) => {
-    return useQuery({
-      queryKey: ['product', id],
-      queryFn: () => ProductsService.getProductById(id!),
-      enabled: !!id,
-      staleTime: 5 * 60 * 1000, // 5 minutes
-    });
-  };
+  const useProduct = (id: string) => {
+  return useQuery({
+    queryKey: ['product', id],
+    queryFn: () => ProductsService.getProductById(id),
+    enabled: !!id,
+    staleTime: 5 * 60 * 1000, // 5 minutos
+  });
+};
+
 
   const useCreateProduct = () => {
     return useMutation({
