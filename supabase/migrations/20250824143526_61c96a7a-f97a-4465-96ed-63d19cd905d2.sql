@@ -20,7 +20,6 @@ BEGIN
   IF NOT FOUND THEN
     SELECT json_build_object(
       'isValid', false,
-      'currentStock', 0,
       'message', PRODUCT_NOT_FOUND_MSG
     ) INTO result;
     RETURN result;
@@ -40,7 +39,7 @@ BEGIN
     IF current_stock < quantity_param THEN
       SELECT json_build_object(
         'isValid', false,
-        'currentStock', current_stock,
+    current_stock,
         'message', format('Estoque insuficiente para "%s". Disponível: %s, Solicitado: %s', 
           product_name, current_stock, quantity_param)
       ) INTO result;
@@ -50,8 +49,7 @@ BEGIN
   
   -- Validation passed
   SELECT json_build_object(
-    'isValid', true,
-    'currentStock', current_stock,
+    'isValid', true, current_stock,
     'productName', product_name
   ) INTO result;
   
