@@ -112,7 +112,7 @@ BEGIN
   IF type_param = 'out' THEN
     IF current_stock = 0 THEN
       SELECT json_build_object(
-        'isValid', false,
+         false,
         'currentStock', current_stock,
         format('Produto "%s" sem estoque disponível', product_name)
       ) INTO result;
@@ -121,7 +121,7 @@ BEGIN
     
     IF current_stock < quantity_param THEN
       SELECT json_build_object(
-        'isValid', false,
+        false,
         'currentStock', current_stock,
          format('Estoque insuficiente para "%s". Disponível: %s, Solicitado: %s', 
           product_name, current_stock, quantity_param)
@@ -132,7 +132,7 @@ BEGIN
   
   -- Validação passou
   SELECT json_build_object(
-    'isValid', true,
+     true,
     'currentStock', current_stock,
     'productName', product_name
   ) INTO result;
