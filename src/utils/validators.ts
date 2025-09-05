@@ -4,7 +4,7 @@ import { z } from "zod";
 export const nameSchema = z.string()
   .min(2, "Nome deve ter pelo menos 2 caracteres")
   .max(100, "Nome não pode exceder 100 caracteres")
-  .regex(/^[A-Za-zÀ-ÿ0-9\s\-\.\_]+$/, "Nome contém caracteres inválidos");
+  .regex(/^[A-Za-zÀ-ÿ0-9\s\]+$/, "Nome contém caracteres inválidos");
 
 // Validador para CPF
 export const cpfSchema = z.string()
