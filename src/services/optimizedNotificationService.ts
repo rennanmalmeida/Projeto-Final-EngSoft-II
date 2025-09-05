@@ -83,7 +83,7 @@ class OptimizedNotificationService {
               type: 'high_value_movement',
               severity: 'medium',
               title: 'Movimentação de Alto Valor',
-              message: `${movement.type === 'in' ? 'Entrada' : 'Saída'} de ${movement.quantity} ${(movement.products as any).name} - R$ ${value.toFixed(2)}`,
+              message: `${movement.type === 'in' ? 'Entrada' : 'Saída'} de ${movement.quantity} ${movement.products.name} - R$ ${value.toFixed(2)}`,
               isRead: false,
               createdAt: movement.date,
             });
