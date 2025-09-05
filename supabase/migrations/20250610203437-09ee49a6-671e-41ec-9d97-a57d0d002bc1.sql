@@ -26,7 +26,7 @@ JOIN pg_namespace n ON c.relnamespace = n.oid
 WHERE c.relname = 'products'
 AND n.nspname = 'public'
 AND NOT t.tgisinternal
-ORDER BY t.tgname;
+ORDER BY c.relname ASC, t.tgname ASC;
 
 -- Verificar se a função update_product_quantity está sendo chamada múltiplas vezes
 SELECT 
