@@ -93,15 +93,6 @@
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
-  }
-  
-  /* Melhorias de responsividade global */
-  html {
-    overflow-x: hidden;
-  }
-  
-  /* Prevenir overflow horizontal */
-  body {
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -126,6 +117,14 @@
     background: hsl(var(--accent));
   }
 }
+
+  }
+  
+  /* Melhorias de responsividade global */
+  html {
+    overflow-x: hidden;
+  }
+  
 
 @layer components {
   /* Cards responsivos melhorados */
