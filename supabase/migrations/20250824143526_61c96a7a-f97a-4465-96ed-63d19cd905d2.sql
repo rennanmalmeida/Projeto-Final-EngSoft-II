@@ -15,7 +15,8 @@ DECLARE
   
   -- Constantes
   PRODUCT_NOT_FOUND_MSG CONSTANT TEXT := 'Produto não encontrado';
-  MESSAGE_KEY CONSTANT TEXT := 'message';
+  MESSAGE_KEY          CONSTANT TEXT := 'message';
+  IS_VALID_KEY         CONSTANT TEXT := 'isValid';
 BEGIN
   -- Busca do produto
   SELECT quantity, name INTO current_stock, product_name
@@ -25,7 +26,7 @@ BEGIN
   -- Produto não encontrado
   IF NOT FOUND THEN
     SELECT json_build_object(
-      'isValid', false,
+      IS_VALID_KEY, false,
       MESSAGE_KEY, PRODUCT_NOT_FOUND_MSG
     ) INTO result;
     RETURN result;
@@ -35,7 +36,7 @@ BEGIN
   IF type_param = 'out' THEN
     IF current_stock = 0 THEN
       SELECT json_build_object(
-        'isValid', false,
+        IS_VALID_KEY, false,
         'currentStock', current_stock,
         MESSAGE_KEY, format('Produto "%s" sem estoque disponível', product_name)
       ) INTO result;
@@ -44,7 +45,7 @@ BEGIN
     
     IF current_stock < quantity_param THEN
       SELECT json_build_object(
-        'isValid', false,
+        IS_VALID_KEY, false,
         'currentStock', current_stock,
         MESSAGE_KEY, format(
           'Estoque insuficiente para "%s". Disponível: %s, Solicitado: %s', 
@@ -57,7 +58,7 @@ BEGIN
   
   -- Validação OK
   SELECT json_build_object(
-    'isValid', true, 
+    IS_VALID_KEY, true, 
     'currentStock', current_stock,
     'productName', product_name
   ) INTO result;
