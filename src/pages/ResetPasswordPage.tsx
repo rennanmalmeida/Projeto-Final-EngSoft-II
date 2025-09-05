@@ -19,12 +19,15 @@ const ResetPasswordPage: React.FC = () => {
   useEffect(() => {
     // Check if the URL contains a hash fragment (indicating password reset flow)
     const hash = window.location.hash;
-    if (!hash || !hash.includes("type=recovery")) {
-      toast({
-        variant: "destructive",
-        title: "Link inválido",
-        description: "O link de redefinição de senha é inválido ou expirou."
-      });
+    if (!hash?.includes("type-recovery")) {
+  toast({
+    variant: "destructive",
+    title: "Link inválido",
+    description: "O link de redefinição de senha é inválido ou expirou."
+  });
+  setTimeout(() => navigate("/forgot-password"), 3000);
+}
+
       // Redirect to forgot password page after a brief delay
       setTimeout(() => navigate("/forgot-password"), 3000);
     }
