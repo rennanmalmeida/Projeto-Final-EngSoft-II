@@ -57,7 +57,8 @@ const PaginationLink = ({
     )}
     {...props}
   >
-    {children ? children : <span className="sr-only">Pagination link</span>}
+    {children || <span className="sr-only">Pagination link</span>}
+
   </a>
 )
 PaginationLink.displayName = "PaginationLink"
