@@ -3,23 +3,30 @@ import { Product, StockMovement, Supplier, Category } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 
+// --- Aliases ---
+type NewProduct = Omit<Product, 'id' | 'createdAt' | 'updatedAt'>;
+type UpdateProduct = Partial<Product>;
+type NewStockMovement = Omit<StockMovement, 'id' | 'date' | 'createdBy' | 'updatedAt'>;
+type NewSupplier = Omit<Supplier, 'id' | 'createdAt' | 'updatedAt'>;
+
+// --- Context Type ---
 interface DataContextType {
   products: Product[];
   loadingProducts: boolean;
   fetchProducts: () => Promise<void>;
-  createProduct: (product: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
-  updateProduct: (id: string, product: Partial<Product>) => Promise<void>;
+  createProduct: (product: NewProduct) => Promise<void>;
+  updateProduct: (id: string, product: UpdateProduct) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;
 
   stockMovements: StockMovement[];
   loadingMovements: boolean;
   fetchStockMovements: () => Promise<void>;
-  createStockMovement: (movement: Omit<StockMovement, 'id' | 'date' | 'createdBy' | 'updatedAt'>) => Promise<void>;
+  createStockMovement: (movement: NewStockMovement) => Promise<void>;
 
   suppliers: Supplier[];
   loadingSuppliers: boolean;
   fetchSuppliers: () => Promise<void>;
-  createSupplier: (supplier: Omit<Supplier, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
+  createSupplier: (supplier: NewSupplier) => Promise<void>;
 
   categories: Category[];
   loadingCategories: boolean;
@@ -113,7 +120,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, [toast]);
 
-  const createProduct = useCallback(async (productData: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const createProduct = useCallback(async (productData: NewProduct) => {
     try {
       const { data, error } = await supabase
         .from('products')
@@ -140,7 +147,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, [toast]);
 
-  const updateProduct = useCallback(async (id: string, productData: Partial<Product>) => {
+  const updateProduct = useCallback(async (id: string, productData: UpdateProduct) => {
     try {
       const updateData: any = {};
       if (productData.name !== undefined) updateData.name = productData.name;
@@ -191,7 +198,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, [toast]);
 
-  const createStockMovement = useCallback(async (movementData: Omit<StockMovement, 'id' | 'date' | 'createdBy' | 'updatedAt'>) => {
+  const createStockMovement = useCallback(async (movementData: NewStockMovement) => {
     try {
       const { data, error } = await supabase
         .from('stock_movements')
@@ -232,7 +239,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, [toast]);
 
-  const createSupplier = useCallback(async (supplierData: Omit<Supplier, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const createSupplier = useCallback(async (supplierData: NewSupplier) => {
     try {
       const { data, error } = await supabase
         .from('suppliers')
