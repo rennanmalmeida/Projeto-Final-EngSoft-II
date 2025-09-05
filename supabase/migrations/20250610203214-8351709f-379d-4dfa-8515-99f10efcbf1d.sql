@@ -1,48 +1,75 @@
+--
+-- Definir uma variável de sessão para o nome do esquema.
+-- A variável 'app.schema' será acessível durante toda a sessão.
+-- Isso evita a repetição do nome do esquema e facilita a manutenção.
+--
 
--- Verificar triggers existentes na tabela stock_movements
+SET app.schema = 'public';
+
+---
+
+--
+-- Consultas para verificar triggers existentes
+--
+
+-- Verificar triggers na tabela 'stock_movements'
 SELECT 
-    t.tgname as trigger_name,
-    c.relname as table_name,
+    t.tgname AS trigger_name,
+    c.relname AS table_name,
     t.tgenabled,
-    pg_get_triggerdef(t.oid) as trigger_definition
+    pg_get_triggerdef(t.oid) AS trigger_definition
 FROM pg_trigger t
 JOIN pg_class c ON t.tgrelid = c.oid
 JOIN pg_namespace n ON c.relnamespace = n.oid
 WHERE c.relname = 'stock_movements'
-AND n.nspname = 'public'
-AND NOT t.tgisinternal;
+  AND n.nspname = current_setting('app.schema')
+  AND NOT t.tgisinternal;
 
--- Verificar triggers existentes na tabela products  
+---
+
+-- Verificar triggers na tabela 'products'
 SELECT 
-    t.tgname as trigger_name,
-    c.relname as table_name,
+    t.tgname AS trigger_name,
+    c.relname AS table_name,
     t.tgenabled,
-    pg_get_triggerdef(t.oid) as trigger_definition
+    pg_get_triggerdef(t.oid) AS trigger_definition
 FROM pg_trigger t
 JOIN pg_class c ON t.tgrelid = c.oid
 JOIN pg_namespace n ON c.relnamespace = n.oid
 WHERE c.relname = 'products'
-AND n.nspname = 'public'
-AND NOT t.tgisinternal;
+  AND n.nspname = current_setting('app.schema')
+  AND NOT t.tgisinternal;
 
--- Verificar detalhes da função update_product_quantity
+---
+
+--
+-- Consulta para verificar a função de gatilho
+--
+
+-- Verificar detalhes da função 'update_product_quantity'
 SELECT 
     proname,
     prosrc
 FROM pg_proc 
 WHERE proname = 'update_product_quantity';
 
--- Verificar se há múltiplos triggers apontando para a mesma função
+---
+
+--
+-- Consulta para verificar a associação entre triggers e a função
+--
+
+-- Verificar triggers que usam a função 'update_product_quantity' nas tabelas 'stock_movements' e 'products'
 SELECT 
-    t.tgname as trigger_name,
-    c.relname as table_name,
-    p.proname as function_name,
+    t.tgname AS trigger_name,
+    c.relname AS table_name,
+    p.proname AS function_name,
     t.tgenabled
 FROM pg_trigger t
 JOIN pg_class c ON t.tgrelid = c.oid
 JOIN pg_proc p ON t.tgfoid = p.oid
 JOIN pg_namespace n ON c.relnamespace = n.oid
-WHERE n.nspname = 'public'
-AND c.relname IN ('stock_movements', 'products')
-AND NOT t.tgisinternal
-ORDER BY c.relname, t.tgname;
+WHERE n.nspname = current_setting('app.schema')
+  AND c.relname IN ('stock_movements', 'products')
+  AND NOT t.tgisinternal
+ORDER BY c.relname ASC, t.tgname ASC;
